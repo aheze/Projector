@@ -9,8 +9,12 @@
 import UIKit
 
 
+protocol ReturnCode: class {
+    func returnCode(image: UIImage)
+}
 class Projector {
     
+    weak var returnAztecCode: ReturnCode?
     static var collectionWindow: UIWindow?
         
     static func showFakeStatusBar() {
@@ -30,6 +34,10 @@ class Projector {
                 let collectionView = ProjectorCollectionViewController()
                 collectionWindow?.rootViewController = collectionView
                 collectionWindow?.makeKeyAndVisible()
+                
+                if let window = self.collectionWindow {
+                    ProjectorConfiguration.collectionWindow = window
+                }
             }
             #endif
         }
@@ -42,6 +50,14 @@ class Projector {
             
             ProjectorConfiguration.rootWindow = rootWindow
             ProjectorConfiguration.settings = settings
+            
+            if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {
+                if orientation.isLandscape {
+                    ProjectorConfiguration.isLandscape = true
+                } else {
+                    ProjectorConfiguration.isLandscape = false
+                }
+            }
             
             let realOriginalAspectRatio = rootWindow.frame.size.width / rootWindow.frame.size.height
             var allowedDevices = [DeviceType]()
@@ -81,10 +97,9 @@ class Projector {
         
         let originalSize = ProjectorConfiguration.originalSize
         
-        if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {
-            if orientation.isLandscape {
-                newSize = CGSize(width: newSize.height, height: newSize.width)
-            }
+        if ProjectorConfiguration.isLandscape {
+            print("LAND")
+            newSize = CGSize(width: newSize.height, height: newSize.width)
         }
     
         let originalWidth = originalSize.width
@@ -104,28 +119,48 @@ class Projector {
         var percentOfNew = CGFloat(0)
         var percentOfOld = CGFloat(0)
         
+//        var originalToNewWidthRatio =
+        
+        var projectedDeviceIsSkinnier = false
         if originalAspectRatio < newAspectRatio {
-            percentOfNew = originalWidth / newSize.width
-            percentOfOld = newSize.width / originalWidth
+            projectedDeviceIsSkinnier = false
+            percentOfNew = originalWidth / newWidth
+            percentOfOld = newWidth / originalWidth
         } else if originalAspectRatio > newAspectRatio {
-            percentOfNew = originalHeight / newSize.height
-            percentOfOld = newSize.height / originalHeight
+            projectedDeviceIsSkinnier = true
+            percentOfNew = originalHeight / newHeight
+            percentOfOld = newHeight / originalHeight
         }
         
         var newOrigin = CGPoint(x: 0, y: 0)
+        
         let normalX = halfOrigWidth - halfNewWidth
         let normalY = halfOrigHeight - halfNewHeight
         
+        let newWidthConvertedToOriginal = newWidth * percentOfNew
+        let newHeightConvertedToOriginal = newHeight * percentOfNew
+        
+        print("CROPPP: width: \(newWidthConvertedToOriginal), height: \(newHeightConvertedToOriginal)")
+        print("POSITION:: \(settings.position)")
+        var frameForCropping = CGRect()
         switch settings.position {
         case .centered:
             newOrigin.x = normalX
             newOrigin.y = normalY
+            if projectedDeviceIsSkinnier {
+                let xValue = (originalWidth - newWidthConvertedToOriginal) / 2
+                frameForCropping = CGRect(x: xValue, y: 0, width: percentOfNew * newWidth, height: percentOfNew * newHeight)
+            } else {
+                let yValue = (originalHeight - newHeightConvertedToOriginal) / 2
+                frameForCropping = CGRect(x: 0, y: yValue, width: percentOfNew * newWidth, height: percentOfNew * newHeight)
+            }
         case .left:
             let convertedOriginalWidth = originalHeight * newAspectRatio
             let newConverted = convertedOriginalWidth * percentOfOld
             let diff = (convertedOriginalWidth - newConverted) / 2
             newOrigin.x = diff
             newOrigin.y = normalY
+            frameForCropping = CGRect(x: 0, y: 0, width: percentOfNew * newWidth, height: percentOfNew * newHeight)
         case .right:
             let convertedOriginalWidth = originalHeight * newAspectRatio
             let newConverted = convertedOriginalWidth * percentOfOld
@@ -134,12 +169,15 @@ class Projector {
             diff += normalXCoordinate
             newOrigin.x = diff
             newOrigin.y = normalY
+            let xValue = originalWidth - newWidthConvertedToOriginal
+            frameForCropping = CGRect(x: xValue, y: 0, width: percentOfNew * newWidth, height: percentOfNew * newHeight)
         case .top:
             let convertedOriginalHeight = originalWidth * (1 / newAspectRatio)
             let newConverted = convertedOriginalHeight * percentOfOld
             let diff = (convertedOriginalHeight - newConverted) / 2
             newOrigin.x = normalX
             newOrigin.y = diff
+            frameForCropping = CGRect(x: 0, y: 0, width: percentOfNew * newWidth, height: percentOfNew * newHeight)
         case .bottom:
             let convertedOriginalHeight = originalWidth * (1 / newAspectRatio)
             let newConverted = convertedOriginalHeight * percentOfOld
@@ -148,8 +186,22 @@ class Projector {
             diff += normalYCoordinate
             newOrigin.x = normalX
             newOrigin.y = diff
+            let yValue = originalHeight - newHeightConvertedToOriginal
+            frameForCropping = CGRect(x: 0, y: yValue, width: percentOfNew * newWidth, height: percentOfNew * newHeight)
         }
     
+        frameForCropping.origin.y += ProjectorConfiguration.statusBarHeight
+        ProjectorConfiguration.currentFrameForCropping = frameForCropping
+        
+//        if let data = "Xiuhcoatl, the turquoise serpent of the fires".data(using: .utf8) {
+//            if let aztec = CIFilter(name: "CIAztecCodeGenerator", parameters: [ "inputMessage" : data ])?.outputImage {
+//
+//
+//
+//            }
+//
+//        }
+        
         newOrigin.y += ProjectorConfiguration.statusBarHeight
         
         UIView.animate(withDuration: 0.2, animations: {
@@ -162,7 +214,7 @@ class Projector {
                 ProjectorConfiguration.rootWindow.transform = CGAffineTransform(scaleX: percentOfNew, y: percentOfNew)
             })
         }
-        ProjectorConfiguration.projectedScreenPortraitSize.width = newWidth
-        ProjectorConfiguration.projectedScreenPortraitSize.height = newHeight
+        ProjectorConfiguration.projectedScreenPortraitSize.width = device.getSize().width
+        ProjectorConfiguration.projectedScreenPortraitSize.height = device.getSize().height
     }
 }

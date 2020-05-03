@@ -11,7 +11,28 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+var orientationLock = UIInterfaceOrientationMask.all
 
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        if let currentWindow = window {
+            
+            if let orientation = ProjectorConfiguration.rootWindow.windowScene?.interfaceOrientation {
+                if ProjectorConfiguration.initializedCollectionController == true {
+                     if orientation.isLandscape {
+                        ProjectorConfiguration.collectionController.disableMenuPress()
+                    } else {
+                        ProjectorConfiguration.collectionController.enableMenuPress()
+                    }
+                }
+            }
+            
+            
+            if ProjectorConfiguration.collectionWindow == currentWindow {
+                return .portrait
+            }
+        }
+        return .all
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.

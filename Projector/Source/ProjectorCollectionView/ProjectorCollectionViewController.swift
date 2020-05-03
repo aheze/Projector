@@ -17,12 +17,17 @@ class ProjectorCollectionViewController: UIViewController {
     
     weak var controlsView: UIView!
     
+    weak var aztecCodeView: UIView!
+    weak var astecCodeImageView: UIImageView!
+    
     weak var leftButton: UIButton!
     weak var middleButton: UIButton!
     weak var rightButton: UIButton!
     
     weak var menuButton: UIButton!
-    var isShowingMenu = false
+    var isShowingMenu = true
+    var enablePressMenu = true
+    
     var leftConstraint = NSLayoutConstraint()
     var bottomContraint = NSLayoutConstraint()
     
@@ -36,57 +41,77 @@ class ProjectorCollectionViewController: UIViewController {
     var originalWidth = CGFloat()
     var originalHeight = CGFloat()
 
-    @objc func menuPressed(sender: UIButton!) {
+    func disableMenuPress() {
+        enablePressMenu = false
+        disableMenu()
+    }
+    
+    func enableMenuPress() {
+        enablePressMenu = true
+        enableMenu()
+    }
+    
+    func disableMenu() {
+//        print("DIDIDSS")
+        isShowingMenu = false
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 40, weight: .semibold)
+        let menuImage = UIImage(systemName: "slider.horizontal.3", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
+        self.menuButton.setImage(menuImage, for: .normal)
         
-        if isShowingMenu {
-            isShowingMenu = false
+        UIView.animate(withDuration: 0.3, animations: {
+            self.controlsView.frame = CGRect(x: 50, y: 0, width: 40, height: 40)
             
-            let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 40, weight: .semibold)
-            let menuImage = UIImage(systemName: "slider.horizontal.3", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
-            self.menuButton.setImage(menuImage, for: .normal)
+            self.leftButton.alpha = 0
+            self.middleButton.alpha = 0
+            self.rightButton.alpha = 0
             
-            UIView.animate(withDuration: 0.3, animations: {
-                self.controlsView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-                
-                self.leftButton.alpha = 0
-                self.middleButton.alpha = 0
-                self.rightButton.alpha = 0
-                
-                self.collectionView.alpha = 0
-                self.selectedIconView.alpha = 0
-            }) { _ in
-                self.collectionView.isHidden = true
+            self.collectionView.alpha = 0
+            self.selectedIconView.alpha = 0
+        })
+    }
+    func enableMenu() {
+//        print("SNSNSNSNenenene")
+        isShowingMenu = true
+        
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30, weight: .semibold)
+        let menuImage = UIImage(systemName: "xmark", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
+        self.menuButton.setImage(menuImage, for: .normal)
+        
+//        self.collectionView.isHidden = false
+        UIView.animate(withDuration: 0.3, animations: {
+            self.controlsView.frame = CGRect(x: 50, y: 0, width: 150, height: 40)
+            
+            self.collectionView.alpha = 1
+            self.selectedIconView.alpha = 1
+            self.leftButton.alpha = 0.4
+            self.middleButton.alpha = 0.4
+            self.rightButton.alpha = 0.4
+            
+            switch ProjectorConfiguration.settings.position {
+            case .centered:
+                self.middleButton.alpha = 1
+            case .left:
+                self.leftButton.alpha = 1
+            case .right:
+                self.rightButton.alpha = 1
+            case .top:
+                self.leftButton.alpha = 1
+            case .bottom:
+                self.rightButton.alpha = 1
             }
-            
+        })
+    }
+    @objc func menuPressed(sender: UIButton!) {
+        if enablePressMenu {
+            if isShowingMenu {
+                disableMenu()
+            } else {
+                enableMenu()
+            }
         } else {
-            
-            let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30, weight: .semibold)
-            let menuImage = UIImage(systemName: "xmark", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
-            self.menuButton.setImage(menuImage, for: .normal)
-            
-            isShowingMenu = true
-            self.collectionView.isHidden = false
-            UIView.animate(withDuration: 0.3, animations: {
-                self.controlsView.frame = CGRect(x: 0, y: 0, width: 150, height: 40)
-                self.collectionView.alpha = 1
-                self.selectedIconView.alpha = 1
-                self.leftButton.alpha = 0.4
-                self.middleButton.alpha = 0.4
-                self.rightButton.alpha = 0.4
-                
-                switch ProjectorConfiguration.settings.position {
-                case .centered:
-                    self.middleButton.alpha = 1
-                case .left:
-                    self.leftButton.alpha = 1
-                case .right:
-                    self.rightButton.alpha = 1
-                case .top:
-                    self.leftButton.alpha = 1
-                case .bottom:
-                    self.rightButton.alpha = 1
-                }
-            })
+            let alert = UIAlertController(title: "Rotate your device!", message: "Changing the Projector configuration is only allowed in portrait view", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
@@ -136,7 +161,10 @@ class ProjectorCollectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         view = PassView()
+        
+        ProjectorConfiguration.collectionController = self
         
         
         originalSize = ProjectorConfiguration.originalSize
@@ -172,11 +200,11 @@ class ProjectorCollectionViewController: UIViewController {
         self.collectionView = collectionView
         self.collectionViewReferenceView = referenceView
         
-        self.collectionView.isHidden = true
+//        self.collectionView.isHidden = true
         self.collectionView.alpha = 0
         
         let overlayControls = UIView()
-        overlayControls.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        overlayControls.frame = CGRect(x: 50, y: 0, width: 40, height: 40)
         overlayControls.layer.cornerRadius = 6
         overlayControls.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
         overlayControls.backgroundColor = #colorLiteral(red: 0.4158049939, green: 0.4158049939, blue: 0.4158049939, alpha: 1)
@@ -227,6 +255,20 @@ class ProjectorCollectionViewController: UIViewController {
         leftButton.alpha = 0
         middleButton.alpha = 0
         rightButton.alpha = 0
+        
+        let codeOverlayView = UIView()
+        codeOverlayView.frame = CGRect(x: 0, y: 0, width: 50, height: 40)
+        codeOverlayView.backgroundColor = UIColor.white
+        
+        self.aztecCodeView = codeOverlayView
+        referenceView.addSubview(codeOverlayView)
+        
+        let imageView = UIImageView()
+        imageView.frame = CGRect(x: 12, y: 2, width: 36, height: 36)
+        
+        self.astecCodeImageView = imageView
+        codeOverlayView.addSubview(imageView)
+        
         
         var horizontalOffset = CGFloat(0)
         var verticalOffset = CGFloat(0)
@@ -336,6 +378,7 @@ class ProjectorCollectionViewController: UIViewController {
         
         
         self.collectionView.backgroundColor = UIColor.clear
+        ProjectorConfiguration.initializedCollectionController = true
     }
     
 }
@@ -440,11 +483,14 @@ extension ProjectorCollectionViewController: UICollectionViewDelegate {
         
         let originalPosition = ProjectorConfiguration.settings.position
         
-        leftButton.alpha = 0.6
-        middleButton.alpha = 0.6
-        rightButton.alpha = 0.6
+        
         if originallyWasSideways != isSideways {
+            leftButton.alpha = 0.6
+            middleButton.alpha = 0.6
+            rightButton.alpha = 0.6
+            
             switch originalPosition {
+                
             case .centered:
                 middleButton.alpha = 1
                 ProjectorConfiguration.settings.position = .centered
@@ -461,21 +507,22 @@ extension ProjectorCollectionViewController: UICollectionViewDelegate {
                 rightButton.alpha = 1
                 ProjectorConfiguration.settings.position = .right
             }
-        } else {
-            ProjectorConfiguration.settings.position = originalPosition
-            switch originalPosition {
-            case .centered:
-                middleButton.alpha = 1
-            case .left:
-                leftButton.alpha = 1
-            case .right:
-                rightButton.alpha = 1
-            case .top:
-                leftButton.alpha = 1
-            case .bottom:
-                rightButton.alpha = 1
-            }
         }
+//        else {
+//            ProjectorConfiguration.settings.position = originalPosition
+//            switch originalPosition {
+//            case .centered:
+//                middleButton.alpha = 1
+//            case .left:
+//                leftButton.alpha = 1
+//            case .right:
+//                rightButton.alpha = 1
+//            case .top:
+//                leftButton.alpha = 1
+//            case .bottom:
+//                rightButton.alpha = 1
+//            }
+//        }
         
         var collectionTransform = CGAffineTransform()
         var horizontalOffset = CGFloat(0)
@@ -513,6 +560,8 @@ extension ProjectorCollectionViewController: UICollectionViewDelegate {
         var anchorPoint = CGPoint()
         
         var newFrameRect = CGRect()
+        
+//        print("ISDIEW?? \(isSideways)")
         if isSideways {
             leftMidConstraint.constant = horizontalOffset
             bottomMidConstraint.constant = verticalOffset
