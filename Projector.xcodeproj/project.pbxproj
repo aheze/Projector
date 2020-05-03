@@ -13,6 +13,14 @@
 		496A19A0245E7ED300D758FB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 496A199E245E7ED300D758FB /* Main.storyboard */; };
 		496A19A2245E7ED900D758FB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 496A19A1245E7ED900D758FB /* Assets.xcassets */; };
 		496A19A5245E7ED900D758FB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 496A19A3245E7ED900D758FB /* LaunchScreen.storyboard */; };
+		496A19AF245E7F5600D758FB /* DeviceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19AE245E7F5600D758FB /* DeviceType.swift */; };
+		496A19B1245E7F9500D758FB /* ScreenBounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19B0245E7F9500D758FB /* ScreenBounds.swift */; };
+		496A19B3245E7FE800D758FB /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19B2245E7FE800D758FB /* Position.swift */; };
+		496A19B6245E801900D758FB /* ProjectorCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19B5245E801900D758FB /* ProjectorCollectionViewController.swift */; };
+		496A19B8245E804F00D758FB /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19B7245E804F00D758FB /* Utilities.swift */; };
+		496A19BA245E80D800D758FB /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19B9245E80D800D758FB /* CollectionViewCell.swift */; };
+		496A19BC245E80F900D758FB /* Projector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19BB245E80F900D758FB /* Projector.swift */; };
+		496A19BE245E811B00D758FB /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19BD245E811B00D758FB /* Configuration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +32,14 @@
 		496A19A1245E7ED900D758FB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		496A19A4245E7ED900D758FB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		496A19A6245E7ED900D758FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		496A19AE245E7F5600D758FB /* DeviceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceType.swift; sourceTree = "<group>"; };
+		496A19B0245E7F9500D758FB /* ScreenBounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenBounds.swift; sourceTree = "<group>"; };
+		496A19B2245E7FE800D758FB /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
+		496A19B5245E801900D758FB /* ProjectorCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectorCollectionViewController.swift; sourceTree = "<group>"; };
+		496A19B7245E804F00D758FB /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		496A19B9245E80D800D758FB /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		496A19BB245E80F900D758FB /* Projector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Projector.swift; sourceTree = "<group>"; };
+		496A19BD245E811B00D758FB /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +72,7 @@
 		496A1997245E7ED300D758FB /* Projector */ = {
 			isa = PBXGroup;
 			children = (
+				496A19AD245E7F4100D758FB /* Source */,
 				496A1998245E7ED300D758FB /* AppDelegate.swift */,
 				496A199A245E7ED300D758FB /* SceneDelegate.swift */,
 				496A199C245E7ED300D758FB /* ViewController.swift */,
@@ -65,6 +82,29 @@
 				496A19A6245E7ED900D758FB /* Info.plist */,
 			);
 			path = Projector;
+			sourceTree = "<group>";
+		};
+		496A19AD245E7F4100D758FB /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				496A19B4245E7FF700D758FB /* ProjectorCollectionView */,
+				496A19AE245E7F5600D758FB /* DeviceType.swift */,
+				496A19B0245E7F9500D758FB /* ScreenBounds.swift */,
+				496A19B2245E7FE800D758FB /* Position.swift */,
+				496A19B7245E804F00D758FB /* Utilities.swift */,
+				496A19BB245E80F900D758FB /* Projector.swift */,
+				496A19BD245E811B00D758FB /* Configuration.swift */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		496A19B4245E7FF700D758FB /* ProjectorCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				496A19B5245E801900D758FB /* ProjectorCollectionViewController.swift */,
+				496A19B9245E80D800D758FB /* CollectionViewCell.swift */,
+			);
+			path = ProjectorCollectionView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,9 +178,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				496A19BC245E80F900D758FB /* Projector.swift in Sources */,
 				496A199D245E7ED300D758FB /* ViewController.swift in Sources */,
+				496A19AF245E7F5600D758FB /* DeviceType.swift in Sources */,
+				496A19BA245E80D800D758FB /* CollectionViewCell.swift in Sources */,
+				496A19B3245E7FE800D758FB /* Position.swift in Sources */,
 				496A1999245E7ED300D758FB /* AppDelegate.swift in Sources */,
+				496A19B6245E801900D758FB /* ProjectorCollectionViewController.swift in Sources */,
+				496A19B1245E7F9500D758FB /* ScreenBounds.swift in Sources */,
+				496A19B8245E804F00D758FB /* Utilities.swift in Sources */,
 				496A199B245E7ED300D758FB /* SceneDelegate.swift in Sources */,
+				496A19BE245E811B00D758FB /* Configuration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,6 +335,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YA533DMD5J;
 				INFOPLIST_FILE = Projector/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -305,6 +354,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YA533DMD5J;
 				INFOPLIST_FILE = Projector/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

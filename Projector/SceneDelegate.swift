@@ -18,6 +18,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        projectorActivated = true
+        
+        if let rootWindow = self.window {
+            let settings = ProjectorSettings()
+            settings.shouldStopAtStatusBar = true
+            settings.position = .right
+            settings.defaultDeviceToProject = .iPhoneX
+//            settings.shouldShowControls = false
+            
+            Projector.display(rootWindow: rootWindow, settings: settings)
+        }
+        
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
