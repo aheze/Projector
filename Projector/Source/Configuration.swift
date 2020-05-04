@@ -28,7 +28,7 @@ class ProjectorConfiguration: NSObject {
     static var collectionController = ProjectorCollectionViewController()
     static var initializedCollectionController = false
     
-    static var currentFrameForCropping = CGRect(x: 0, y: 0, width: 500, height: 500)
+//    static var currentFrameForCropping = CGRect(x: 0, y: 0, width: 500, height: 500)
     static var projectedScreenPortraitSize = CGSize(width: 0, height: 0)
     static var settings = ProjectorSettings()
     static var simulatedDevice = DeviceType.iPhoneX

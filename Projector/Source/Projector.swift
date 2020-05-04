@@ -22,8 +22,27 @@ class Projector {
             
         }
     }
+    static func returnAllowedOrientationsFor(_ window: UIWindow) -> UIInterfaceOrientationMask {
+        if ProjectorConfiguration.settings.shouldShowControls {
+            if let orientation = ProjectorConfiguration.rootWindow.windowScene?.interfaceOrientation {
+                if ProjectorConfiguration.initializedCollectionController == true {
+                     if orientation.isLandscape {
+                        
+                        ProjectorConfiguration.collectionController.disableMenuPress()
+                    } else {
+                        ProjectorConfiguration.collectionController.enableMenuPress()
+                    }
+                }
+            }
+        }
+        
+        if ProjectorConfiguration.collectionWindow == window {
+            return .portrait
+        }
+        return .all
+    }
     
-    static func makeControlsView(rootWindow: UIWindow) {
+    static func makeControlsView(rootWindow: UIWindow, rect: CGRect) {
         if projectorActivated {
             #if DEBUG
             if let currentScene = rootWindow.windowScene {
@@ -32,6 +51,20 @@ class Projector {
                 collectionWindow?.windowLevel = UIWindow.Level.alert + 1
                 
                 let collectionView = ProjectorCollectionViewController()
+//                collectionView.projectedRect = rect
+                let xValue = rect.origin.x
+                let yValue = rect.origin.y
+                let wValue = rect.size.width
+                let hValue = rect.size.height
+                
+                let roundedXValue = round(1000 * xValue)/1000
+                let roundedYValue = round(1000 * yValue)/1000
+                let roundedWValue = round(1000 * wValue)/1000
+                let roundedHValue = round(1000 * hValue)/1000
+                
+//                print("INIT copyboard: \(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)")
+                collectionView.rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)"
+                
                 collectionWindow?.rootViewController = collectionView
                 collectionWindow?.makeKeyAndVisible()
                 
@@ -77,19 +110,28 @@ class Projector {
                 statusBarHeight = ProjectorConfiguration.rootWindow.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
                 originalSize.height -= statusBarHeight
                 ProjectorConfiguration.statusBarHeight = statusBarHeight
+            } else {
+                ProjectorConfiguration.statusBarHeight = 0
             }
             
             ProjectorConfiguration.originalSize = originalSize
-            Projector.project(device: settings.defaultDeviceToProject)
             
-            if settings.shouldShowControls {
-                Projector.makeControlsView(rootWindow: rootWindow)
+            Projector.project(device: settings.defaultDeviceToProject) { rect in
+                if settings.shouldShowControls {
+                    Projector.makeControlsView(rootWindow: rootWindow, rect: rect)
+                }
             }
+//                codeImage = image
+//            }
+            
+//            if settings.shouldShowControls {
+//                Projector.makeControlsView(rootWindow: rootWindow, rect: rect)
+//            }
             
             #endif
         }
     }
-    static func project(device: DeviceType) {
+    static func project(device: DeviceType, handler:@escaping (_ rect: CGRect)-> Void) {
         
         let settings = ProjectorConfiguration.settings
         ProjectorConfiguration.simulatedDevice = device
@@ -98,7 +140,6 @@ class Projector {
         let originalSize = ProjectorConfiguration.originalSize
         
         if ProjectorConfiguration.isLandscape {
-            print("LAND")
             newSize = CGSize(width: newSize.height, height: newSize.width)
         }
     
@@ -140,8 +181,6 @@ class Projector {
         let newWidthConvertedToOriginal = newWidth * percentOfNew
         let newHeightConvertedToOriginal = newHeight * percentOfNew
         
-        print("CROPPP: width: \(newWidthConvertedToOriginal), height: \(newHeightConvertedToOriginal)")
-        print("POSITION:: \(settings.position)")
         var frameForCropping = CGRect()
         switch settings.position {
         case .centered:
@@ -191,16 +230,9 @@ class Projector {
         }
     
         frameForCropping.origin.y += ProjectorConfiguration.statusBarHeight
-        ProjectorConfiguration.currentFrameForCropping = frameForCropping
+//        ProjectorConfiguration.currentFrameForCropping = frameForCropping
         
-//        if let data = "Xiuhcoatl, the turquoise serpent of the fires".data(using: .utf8) {
-//            if let aztec = CIFilter(name: "CIAztecCodeGenerator", parameters: [ "inputMessage" : data ])?.outputImage {
-//
-//
-//
-//            }
-//
-//        }
+        
         
         newOrigin.y += ProjectorConfiguration.statusBarHeight
         
@@ -212,9 +244,32 @@ class Projector {
                 ProjectorConfiguration.rootWindow.frame.size.width = newWidth
                 ProjectorConfiguration.rootWindow.frame.size.height = newHeight
                 ProjectorConfiguration.rootWindow.transform = CGAffineTransform(scaleX: percentOfNew, y: percentOfNew)
-            })
+            }) { _ in
+//                print("project: \(ProjectorConfiguration.rootWindow.newTopLeft)")
+//                print("Org: \(newOrigin), NEWWIDTH: \(newWidth), height: \(newHeight)")
+//                print("FRAME:: \(ProjectorConfiguration.rootWindow.frame)")
+                handler(ProjectorConfiguration.rootWindow.frame)
+            }
         }
-        ProjectorConfiguration.projectedScreenPortraitSize.width = device.getSize().width
-        ProjectorConfiguration.projectedScreenPortraitSize.height = device.getSize().height
+        
+        
+        
+//        return dataRectString
+//        print("RECT: \(dataRectString)")
+//        if let data = dataRectString.data(using: .utf8) {
+//            if let aztec = CIFilter(name: "CIAztecCodeGenerator", parameters: ["inputMessage" : data])?.outputImage {
+//                let uiImageCode = aztec.convertToUIImage()
+//                return uiImageCode
+//            }
+//        }
+        //RECT: 83.3349753694581y20.0w330.6650246305419h716.0
+    }
+}
+extension CIImage {
+    func convertToUIImage() -> UIImage {
+        let context: CIContext = CIContext.init(options: nil)
+        let cgImage: CGImage = context.createCGImage(self, from: self.extent)!
+        let image: UIImage = UIImage.init(cgImage: cgImage)
+        return image
     }
 }
