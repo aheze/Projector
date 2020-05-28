@@ -12,17 +12,7 @@ var screenBounds: CGRect {
     get {
         if projectorActivated {
             if Thread.current.isMainThread {
-                if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {
-                    if orientation.isPortrait {
-                        return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.width, height: ProjectorConfiguration.projectedScreenPortraitSize.height)
-                    } else {
-                        return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.height, height: ProjectorConfiguration.projectedScreenPortraitSize.width)
-                    }
-                } else {
-                    return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.width, height: ProjectorConfiguration.projectedScreenPortraitSize.height)
-                }
-            } else {
-                return DispatchQueue.main.sync {
+                if #available(iOS 13.0, *) {
                     if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {
                         if orientation.isPortrait {
                             return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.width, height: ProjectorConfiguration.projectedScreenPortraitSize.height)
@@ -31,6 +21,38 @@ var screenBounds: CGRect {
                         }
                     } else {
                         return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.width, height: ProjectorConfiguration.projectedScreenPortraitSize.height)
+                    }
+                } else {
+                    
+                    let orientation = UIApplication.shared.statusBarOrientation
+                    if orientation.isPortrait {
+                        return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.width, height: ProjectorConfiguration.projectedScreenPortraitSize.height)
+                    } else {
+                        return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.height, height: ProjectorConfiguration.projectedScreenPortraitSize.width)
+                    }
+                    
+                }
+            } else {
+                return DispatchQueue.main.sync {
+                    if #available(iOS 13.0, *) {
+                        if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {
+                            if orientation.isPortrait {
+                                return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.width, height: ProjectorConfiguration.projectedScreenPortraitSize.height)
+                            } else {
+                                return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.height, height: ProjectorConfiguration.projectedScreenPortraitSize.width)
+                            }
+                        } else {
+                            return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.width, height: ProjectorConfiguration.projectedScreenPortraitSize.height)
+                        }
+                        
+                    } else {
+                        let orientation = UIApplication.shared.statusBarOrientation
+                        
+                        if orientation.isPortrait {
+                            return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.width, height: ProjectorConfiguration.projectedScreenPortraitSize.height)
+                        } else {
+                            return CGRect(x: 0, y: 0, width: ProjectorConfiguration.projectedScreenPortraitSize.height, height: ProjectorConfiguration.projectedScreenPortraitSize.width)
+                        }
                     }
                 }
             }

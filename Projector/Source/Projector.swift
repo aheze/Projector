@@ -24,15 +24,30 @@ class Projector {
     }
     static func returnAllowedOrientationsFor(_ window: UIWindow) -> UIInterfaceOrientationMask {
         if ProjectorConfiguration.settings.shouldShowControls {
-            if let orientation = ProjectorConfiguration.rootWindow.windowScene?.interfaceOrientation {
+            if #available(iOS 13.0, *) {
+                if let orientation = ProjectorConfiguration.rootWindow.windowScene?.interfaceOrientation {
+                    if ProjectorConfiguration.initializedCollectionController == true {
+                        if orientation.isLandscape {
+                            
+                            ProjectorConfiguration.collectionController.disableMenuPress()
+                        } else {
+                            ProjectorConfiguration.collectionController.enableMenuPress()
+                        }
+                    }
+                }
+            } else {
+                let orientation = UIApplication.shared.statusBarOrientation
                 if ProjectorConfiguration.initializedCollectionController == true {
-                     if orientation.isLandscape {
+                    if orientation.isLandscape {
                         
                         ProjectorConfiguration.collectionController.disableMenuPress()
                     } else {
                         ProjectorConfiguration.collectionController.enableMenuPress()
                     }
                 }
+                
+                
+                // Fallback on earlier versions
             }
         }
         
@@ -45,8 +60,38 @@ class Projector {
     static func makeControlsView(rootWindow: UIWindow, rect: CGRect) {
         if projectorActivated {
             #if DEBUG
-            if let currentScene = rootWindow.windowScene {
-                collectionWindow = OverlayControlsWindow(windowScene: currentScene)
+            
+            if #available(iOS 13.0, *) {
+                if let currentScene = rootWindow.windowScene {
+                    collectionWindow = OverlayControlsWindow(windowScene: currentScene)
+                    collectionWindow?.frame = UIScreen.main.bounds
+                    collectionWindow?.windowLevel = UIWindow.Level.alert + 1
+                    
+                    let collectionView = ProjectorCollectionViewController()
+    //                collectionView.projectedRect = rect
+                    let xValue = rect.origin.x
+                    let yValue = rect.origin.y
+                    let wValue = rect.size.width
+                    let hValue = rect.size.height
+                    
+                    let roundedXValue = round(1000 * xValue)/1000
+                    let roundedYValue = round(1000 * yValue)/1000
+                    let roundedWValue = round(1000 * wValue)/1000
+                    let roundedHValue = round(1000 * hValue)/1000
+                    
+    //                print("INIT copyboard: \(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)")
+                    collectionView.rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)=\(ProjectorConfiguration.statusBarHeight)"
+                    
+                    collectionWindow?.rootViewController = collectionView
+                    collectionWindow?.makeKeyAndVisible()
+                    
+                    if let window = self.collectionWindow {
+                        ProjectorConfiguration.collectionWindow = window
+                    }
+                }
+            
+            } else {
+                collectionWindow = OverlayControlsWindow()
                 collectionWindow?.frame = UIScreen.main.bounds
                 collectionWindow?.windowLevel = UIWindow.Level.alert + 1
                 
@@ -62,8 +107,7 @@ class Projector {
                 let roundedWValue = round(1000 * wValue)/1000
                 let roundedHValue = round(1000 * hValue)/1000
                 
-//                print("INIT copyboard: \(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)")
-                collectionView.rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)"
+                collectionView.rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)=\(ProjectorConfiguration.statusBarHeight)"
                 
                 collectionWindow?.rootViewController = collectionView
                 collectionWindow?.makeKeyAndVisible()
@@ -72,6 +116,8 @@ class Projector {
                     ProjectorConfiguration.collectionWindow = window
                 }
             }
+            
+            
             #endif
         }
     }
@@ -84,7 +130,16 @@ class Projector {
             ProjectorConfiguration.rootWindow = rootWindow
             ProjectorConfiguration.settings = settings
             
-            if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {
+            if #available(iOS 13.0, *) {
+                if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {
+                    if orientation.isLandscape {
+                        ProjectorConfiguration.isLandscape = true
+                    } else {
+                        ProjectorConfiguration.isLandscape = false
+                    }
+                }
+            } else {
+                let orientation = UIApplication.shared.statusBarOrientation
                 if orientation.isLandscape {
                     ProjectorConfiguration.isLandscape = true
                 } else {
@@ -107,10 +162,22 @@ class Projector {
             var statusBarHeight = CGFloat(0)
             var originalSize = CGSize(width: rootWindow.frame.size.width, height: rootWindow.frame.size.height)
             if settings.shouldStopAtStatusBar == true {
-                statusBarHeight = ProjectorConfiguration.rootWindow.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
-                originalSize.height -= statusBarHeight
-                ProjectorConfiguration.statusBarHeight = statusBarHeight
+                
+                if #available(iOS 13.0, *) {
+                    statusBarHeight = ProjectorConfiguration.rootWindow.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+                    originalSize.height -= statusBarHeight
+                    ProjectorConfiguration.statusBarHeight = statusBarHeight
+                } else {
+                    statusBarHeight = UIApplication.shared.statusBarFrame.height
+                    originalSize.height -= statusBarHeight
+                    ProjectorConfiguration.statusBarHeight = statusBarHeight
+                    
+                }
+                
+                
+                
             } else {
+                
                 ProjectorConfiguration.statusBarHeight = 0
             }
             
@@ -245,9 +312,6 @@ class Projector {
                 ProjectorConfiguration.rootWindow.frame.size.height = newHeight
                 ProjectorConfiguration.rootWindow.transform = CGAffineTransform(scaleX: percentOfNew, y: percentOfNew)
             }) { _ in
-//                print("project: \(ProjectorConfiguration.rootWindow.newTopLeft)")
-//                print("Org: \(newOrigin), NEWWIDTH: \(newWidth), height: \(newHeight)")
-//                print("FRAME:: \(ProjectorConfiguration.rootWindow.frame)")
                 handler(ProjectorConfiguration.rootWindow.frame)
             }
         }

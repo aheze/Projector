@@ -47,61 +47,18 @@ class ProjectorCollectionViewController: UIViewController {
     var originalHeight = CGFloat()
 
     func disableMenuPress() {
-//        print("ROOTFRL: \(ProjectorConfiguration.rootWindow.frame)")
-        /// Device must be sideways
-//        let xValue = UIScreen.main.bounds.width - projectedRect.size.height - ProjectorConfiguration.statusBarHeight
-//        let yValue = projectedRect.origin.x
-//        let wValue = projectedRect.size.height
-//        let hValue = projectedRect.size.width
-//        let projectRect = ProjectorConfiguration.rootWindow.frame
-//        let xValue = projectRect.origin.x
-//        let yValue = projectRect.origin.y
-//        let wValue = projectRect.size.width
-//        let hValue = projectRect.size.height
-//
-//        let roundedXValue = round(1000 * xValue)/1000
-//        let roundedYValue = round(1000 * yValue)/1000
-//        let roundedWValue = round(1000 * wValue)/1000
-//        let roundedHValue = round(1000 * hValue)/1000
-//
-//
-//        /// Rect is stored as x, y, width, height
-//        print("copyboard: \(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)")
-//        rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)"
         updateCopyboardString()
         enablePressMenu = false
         disableMenu()
     }
     
     func enableMenuPress() {
-//        print("ROOTFRL: \(ProjectorConfiguration.rootWindow.frame)")
-//        let xValue = projectedRect.origin.x
-//        let yValue = projectedRect.origin.y
-//        let wValue = projectedRect.size.width
-//        let hValue = projectedRect.size.height
-//        let projectRect = ProjectorConfiguration.rootWindow.frame
-//        let xValue = projectRect.origin.x
-//        let yValue = projectRect.origin.y
-//        let wValue = projectRect.size.width
-//        let hValue = projectRect.size.height
-//
-//        let roundedXValue = round(1000 * xValue)/1000
-//        let roundedYValue = round(1000 * yValue)/1000
-//        let roundedWValue = round(1000 * wValue)/1000
-//        let roundedHValue = round(1000 * hValue)/1000
-//
-//        print("copyboard: \(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)")
-//        rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)"
-//
         updateCopyboardString()
         enablePressMenu = true
         enableMenu()
     }
     func updateCopyboardString() {
         
-        let topLeft = ProjectorConfiguration.rootWindow.newTopLeft
-        
-//        print("new top left: \(topLeft)")
         let projectRect = ProjectorConfiguration.rootWindow.frame
         let xValue = projectRect.origin.x
         let yValue = projectRect.origin.y
@@ -114,14 +71,11 @@ class ProjectorCollectionViewController: UIViewController {
         let roundedHValue = round(1000 * hValue)/1000
         
 //        print("copyboard: \(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)")
-        rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)"
+        rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)=\(ProjectorConfiguration.statusBarHeight)"
     }
     
     func disableMenu() {
         isShowingMenu = false
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 40, weight: .semibold)
-        let menuImage = UIImage(systemName: "slider.horizontal.3", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
-        self.menuButton.setImage(menuImage, for: .normal)
         
         UIView.animate(withDuration: 0.3, animations: {
             self.controlsView.frame = CGRect(x: 40, y: 0, width: 40, height: 40)
@@ -133,15 +87,20 @@ class ProjectorCollectionViewController: UIViewController {
             self.collectionView.alpha = 0
             self.selectedIconView.alpha = 0
         })
+        
+        guard #available(iOS 13, *) else {
+            print("You're not running iOS 13, so some icons may not show up.")
+            return
+        }
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 40, weight: .semibold)
+        let menuImage = UIImage(systemName: "slider.horizontal.3", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
+        self.menuButton.setImage(menuImage, for: .normal)
+        
+        
     }
     func enableMenu() {
         isShowingMenu = true
         
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30, weight: .semibold)
-        let menuImage = UIImage(systemName: "xmark", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
-        self.menuButton.setImage(menuImage, for: .normal)
-        
-//        self.collectionView.isHidden = false
         UIView.animate(withDuration: 0.3, animations: {
             self.controlsView.frame = CGRect(x: 40, y: 0, width: 150, height: 40)
             
@@ -164,6 +123,17 @@ class ProjectorCollectionViewController: UIViewController {
                 self.rightButton.alpha = 1
             }
         })
+        
+        guard #available(iOS 13, *) else {
+            print("You're not running iOS 13, so some icons may not show up.")
+            return
+        }
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30, weight: .semibold)
+        let menuImage = UIImage(systemName: "xmark", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
+        self.menuButton.setImage(menuImage, for: .normal)
+        
+//        self.collectionView.isHidden = false
+        
     }
     
     @objc func copyPressed(sender: UIButton!) {
@@ -507,18 +477,6 @@ extension ProjectorCollectionViewController: UICollectionViewDelegateFlowLayout 
 extension ProjectorCollectionViewController {
     func setUpViews() {
         
-//        let xValue = projectedRect.origin.x
-//        let yValue = projectedRect.origin.y
-//        let wValue = projectedRect.size.width
-//        let hValue = projectedRect.size.height
-//
-//        let roundedXValue = round(1000 * xValue)/1000
-//        let roundedYValue = round(1000 * yValue)/1000
-//        let roundedWValue = round(1000 * wValue)/1000
-//        let roundedHValue = round(1000 * hValue)/1000
-//
-//        rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)"
-//        print("load")
         updateCopyboardString()
         
         
@@ -556,13 +514,13 @@ extension ProjectorCollectionViewController {
         referenceView.addSubview(overlayControls)
         self.controlsView = overlayControls
         
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 40, weight: .semibold)
+        
+        
+        
         
         let menu = UIButton()
         overlayControls.addSubview(menu)
         menu.frame = CGRect(x: 0, y: 2, width: 36, height: 36)
-        let menuImage = UIImage(systemName: "slider.horizontal.3", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
-        menu.setImage(menuImage, for: .normal)
         menu.imageView?.contentMode = .scaleAspectFit
         menu.addTarget(self, action: #selector(menuPressed), for: .touchUpInside)
         self.menuButton = menu
@@ -570,54 +528,68 @@ extension ProjectorCollectionViewController {
         let leftButton = UIButton()
         overlayControls.addSubview(leftButton)
         leftButton.frame = CGRect(x: 48, y: 2, width: 36, height: 36)
-        
-        let leftImage = UIImage(systemName: "chevron.up", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
-        leftButton.setImage(leftImage, for: .normal)
         leftButton.imageView?.contentMode = .scaleAspectFit
         leftButton.addTarget(self, action: #selector(leftPressed), for: .touchUpInside)
         self.leftButton = leftButton
         
+        
         let middleButton = UIButton()
         overlayControls.addSubview(middleButton)
         middleButton.frame = CGRect(x: 87, y: 10, width: 20, height: 20)
-        
-        let middleImage = UIImage(systemName: "circle.fill", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
-        middleButton.setImage(middleImage, for: .normal)
         middleButton.imageView?.contentMode = .scaleAspectFit
         middleButton.addTarget(self, action: #selector(centerPressed), for: .touchUpInside)
         self.middleButton = middleButton
         
+        
         let rightButton = UIButton()
         overlayControls.addSubview(rightButton)
         rightButton.frame = CGRect(x: 108, y: 2, width: 36, height: 36)
-        
-        let rightImage = UIImage(systemName: "chevron.down", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
-        rightButton.setImage(rightImage, for: .normal)
         rightButton.imageView?.contentMode = .scaleAspectFit
         rightButton.addTarget(self, action: #selector(rightPressed), for: .touchUpInside)
         self.rightButton = rightButton
         
-        leftButton.alpha = 0
-        middleButton.alpha = 0
-        rightButton.alpha = 0
         
         let codeOverlayView = UIView()
         codeOverlayView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         codeOverlayView.backgroundColor = #colorLiteral(red: 0.3232996324, green: 0.3232996324, blue: 0.3232996324, alpha: 1)
-        
         self.copyCodeView = codeOverlayView
         referenceView.addSubview(codeOverlayView)
         
         let copyButton =  UIButton()
         copyButton.frame = CGRect(x: 2, y: 2, width: 36, height: 36)
         codeOverlayView.addSubview(copyButton)
+        copyButton.addTarget(self, action: #selector(copyPressed), for: .touchUpInside)
         self.copyButton = copyButton
         
-        let copyConfiguration = UIImage.SymbolConfiguration(pointSize: 30, weight: .semibold)
-        let copyImage = UIImage(systemName: "doc.on.clipboard", withConfiguration: copyConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
         
-        copyButton.setImage(copyImage, for: .normal)
-        copyButton.addTarget(self, action: #selector(copyPressed), for: .touchUpInside)
+        if #available(iOS 13.0, *) {
+            let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 40, weight: .semibold)
+            
+            let menuImage = UIImage(systemName: "slider.horizontal.3", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
+            menu.setImage(menuImage, for: .normal)
+            
+            let leftImage = UIImage(systemName: "chevron.up", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
+            leftButton.setImage(leftImage, for: .normal)
+            
+            let middleImage = UIImage(systemName: "circle.fill", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
+            middleButton.setImage(middleImage, for: .normal)
+            
+            
+            let rightImage = UIImage(systemName: "chevron.down", withConfiguration: symbolConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
+            rightButton.setImage(rightImage, for: .normal)
+            
+            let copyConfiguration = UIImage.SymbolConfiguration(pointSize: 30, weight: .semibold)
+            let copyImage = UIImage(systemName: "doc.on.clipboard", withConfiguration: copyConfiguration)?.withTintColor(UIColor.white, renderingMode: .alwaysOriginal)
+            copyButton.setImage(copyImage, for: .normal)
+            
+            
+        }
+        
+        
+        leftButton.alpha = 0
+        middleButton.alpha = 0
+        rightButton.alpha = 0
+        
         
         
         // MARK: Collection View setup
