@@ -1,11 +1,12 @@
 # Projector
-Forget the Simulator, swap your aspect ratio instead! Warning: This is an experimental project that shouldn’t be used in production.
+Forget the Simulator, swap your aspect ratio instead!
+Warning: This is an experimental project that shouldn’t be used in production.
 
 ## Installation
 Drag [Source](https://github.com/aheze/Projector/tree/master/Projector/Source) into your project.
 
 ## How To Use
-Inside SceneDelegate.swift, 
+Inside SceneDelegate.swift, display the root window using Projector.
 
 ```Swift
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -35,4 +36,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 ```
 
 ## License
-Projector is licensed under --TODO--
+Projector is licensed under the MIT license.
