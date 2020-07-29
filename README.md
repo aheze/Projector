@@ -4,6 +4,7 @@
 </p>
 
 Forget the Simulator, swap your aspect ratio instead!
+
 Warning: This is an experimental project that shouldn’t be used in production.
 
 ## Article
@@ -33,10 +34,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if let rootWindow = self.window {
             let settings = ProjectorSettings()
+            
+            /// if true, the view will stop at the status bar's edge. If false, the view will go under the status bar.
             settings.shouldStopAtStatusBar = true
-            settings.position = .right
+            
+            /// for devices that are skinnier than the physical one, options are .left, .centered, ,right.
+            /// for devices that are wider than the physical one, options are .top, .centered, ,bottom.
+            settings.position = .right 
+            
+            /// device to project
             settings.defaultDeviceToProject = .iPhoneX
+            
+            /// show controls to have an on-screen control panel (allow to edit settings.position and settings.defaultDeviceToProject )
             settings.shouldShowControls = false
+            
             Projector.display(rootWindow: rootWindow, settings: settings)
         }
         
