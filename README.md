@@ -1,11 +1,15 @@
 # Projector
+<p align="center">
+  <img width="1000" height="291" src="https://miro.medium.com/max/1000/1*Zo12BU5aQg5S96jQeHCfwA.png">
+</p>
+
 Forget the Simulator, swap your aspect ratio instead!
 Warning: This is an experimental project that shouldn’t be used in production.
 
 ## Article
 I wrote an article about this [on Medium](https://medium.com/macoclock/test-your-app-on-different-screen-sizes-without-the-simulator-ce1ebfdfac22?source=friends_link&sk=db88b92c6cbb4bc1675da8e7d3cb54f6)!
 
-Also, for an easier-to-understandd but simpler version, check out [ProjectorExample](https://github.com/aheze/ProjectorExample) (which follows along the Medium article linked above)!
+Also, for an easier-to-understand but simpler version, check out [ProjectorExample](https://github.com/aheze/ProjectorExample) (which follows along the Medium article linked above)!
 
 ## Installation
 Drag [Source](https://github.com/aheze/Projector/tree/master/Projector/Source) into your project.
