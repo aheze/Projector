@@ -1,9 +1,9 @@
 # Projector
+### Forget the Simulator, swap your aspect ratio instead!
+
 <p align="center">
   <img width="1000" height="291" src="https://miro.medium.com/max/1000/1*Zo12BU5aQg5S96jQeHCfwA.png">
 </p>
-
-Forget the Simulator, swap your aspect ratio instead!
 
 Warning: This is an experimental project that shouldn’t be used in production.
 
