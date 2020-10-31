@@ -1,7 +1,6 @@
 # Projector
 ### Forget the Simulator, swap your aspect ratio instead!
 
-![](https://miro.medium.com/max/1000/1*Zo12BU5aQg5S96jQeHCfwA.png)
 ![](https://raw.githubusercontent.com/aheze/DeveloperAssets/master/AdvancedProjector.png)
 
 
