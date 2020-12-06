@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MediaPlayer
 
 
 class ProjectorCollectionViewController: UIViewController {
@@ -19,10 +20,7 @@ class ProjectorCollectionViewController: UIViewController {
     
     weak var copyCodeView: UIView!
     weak var copyButton: UIButton!
-//    weak var astecCodeImageView: UIImageView!
     
-//    var aztecImage = UIImage()
-//    var projectedRect = CGRect(x: 0, y: 0, width: 0, height: 0)
     var rectStringForCopying = ""
     
     weak var leftButton: UIButton!
@@ -46,6 +44,56 @@ class ProjectorCollectionViewController: UIViewController {
     var originalWidth = CGFloat()
     var originalHeight = CGFloat()
 
+    
+    
+    var currentVolume = Float(0)
+    var outputVolumeObserve: NSKeyValueObservation?
+    let audioSession = AVAudioSession.sharedInstance()
+
+    
+    @objc func volumeChanged(notification: NSNotification) {
+        if let userInfo = notification.userInfo {
+            if let volumeChangeType = userInfo ["AVSystemController_AudioVolumeChangeReasonNotificationParameter"] as? String {
+                if volumeChangeType == "ExplicitVolumeChange" {
+                    if let volume = notification.userInfo?["AVSystemController_AudioVolumeNotificationParameter"] as? Float {
+                        
+                        func up() {
+                            if ProjectorConfiguration.currentIndex != ProjectorConfiguration.devices.count - 1 {
+                                selectCellAt(IndexPath(item: ProjectorConfiguration.currentIndex + 1, section: 0))
+                            }
+                        }
+                        
+                        func down() {
+                            if ProjectorConfiguration.currentIndex != 0 {
+                                selectCellAt(IndexPath(item: ProjectorConfiguration.currentIndex - 1, section: 0))
+                            }
+                        }
+                        
+                        
+                        if volume > currentVolume {
+                            print("up")
+                            up()
+                        } else if volume < currentVolume {
+                            print("down")
+                            down()
+                        } else {
+                            print("max or min...")
+                            if volume == Float(1) {
+                                print("up")
+                                up()
+                            } else {
+                                print("down")
+                                down()
+                            }
+                        }
+                        currentVolume = volume
+                    }
+                }
+            }
+        }
+    }
+    
+    
     func disableMenuPress() {
         updateCopyboardString()
         enablePressMenu = false
@@ -70,7 +118,6 @@ class ProjectorCollectionViewController: UIViewController {
         let roundedWValue = round(1000 * wValue)/1000
         let roundedHValue = round(1000 * hValue)/1000
         
-//        print("copyboard: \(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)")
         rectStringForCopying = "\(roundedXValue)=\(roundedYValue)=\(roundedWValue)=\(roundedHValue)=\(ProjectorConfiguration.statusBarHeight)"
     }
     
@@ -209,6 +256,17 @@ class ProjectorCollectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view = PassView()
+        
+        let originalVol = AVAudioSession.sharedInstance().outputVolume
+        ProjectorConfiguration.originalVolume = originalVol
+        currentVolume = originalVol
+        
+        let volumeView = MPVolumeView(frame: CGRect (origin: CGPoint (x:-500, y: -500), size: CGSize.zero))
+        self.view.addSubview(volumeView)
+        NotificationCenter.default.addObserver(self, selector: #selector(volumeChanged(notification:)), name:
+            NSNotification.Name("AVSystemController_SystemVolumeDidChangeNotification"), object: nil)
+        
+        
         ProjectorConfiguration.collectionController = self
         
         setUpViews()
@@ -287,6 +345,8 @@ extension ProjectorCollectionViewController: UICollectionViewDelegate {
         let newDevice = ProjectorConfiguration.devices[indexPath.item]
         
         animateCollectionviewChange(newDevice: newDevice)
+        
+        ProjectorConfiguration.currentIndex = indexPath.item
         
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         

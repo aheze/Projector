@@ -125,10 +125,9 @@ class Projector {
         if projectorActivated {
             #if DEBUG
             
-            
-            
             ProjectorConfiguration.rootWindow = rootWindow
             ProjectorConfiguration.settings = settings
+            ProjectorConfiguration.currentIndex = ProjectorConfiguration.devices.firstIndex(of: settings.defaultDeviceToProject) ?? 0
             
             if #available(iOS 13.0, *) {
                 if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {
@@ -146,19 +145,7 @@ class Projector {
                     ProjectorConfiguration.isLandscape = false
                 }
             }
-            
-            let realOriginalAspectRatio = rootWindow.frame.size.width / rootWindow.frame.size.height
-            var allowedDevices = [DeviceType]()
-            let invalidRange = realOriginalAspectRatio - 0.015...realOriginalAspectRatio + 0.015
-            for device in ProjectorConfiguration.devices {
-                let deviceSize = device.getSize()
-                let deviceAspectRatio = deviceSize.width / deviceSize.height
-                if !invalidRange.contains(deviceAspectRatio) {
-                    allowedDevices.append(device)
-                }
-            }
-            ProjectorConfiguration.devices = allowedDevices
-            
+           
             var statusBarHeight = CGFloat(0)
             var originalSize = CGSize(width: rootWindow.frame.size.width, height: rootWindow.frame.size.height)
             if settings.shouldStopAtStatusBar == true {
@@ -175,7 +162,6 @@ class Projector {
                 }
                 
                 
-                
             } else {
                 
                 ProjectorConfiguration.statusBarHeight = 0
@@ -188,13 +174,6 @@ class Projector {
                     Projector.makeControlsView(rootWindow: rootWindow, rect: rect)
                 }
             }
-//                codeImage = image
-//            }
-            
-//            if settings.shouldShowControls {
-//                Projector.makeControlsView(rootWindow: rootWindow, rect: rect)
-//            }
-            
             #endif
         }
     }
@@ -202,6 +181,7 @@ class Projector {
         
         let settings = ProjectorConfiguration.settings
         ProjectorConfiguration.simulatedDevice = device
+//        ProjectorConfiguration.currentIndex = ProjectorConfiguration.devices.firstIndex(of: device)
         var newSize = device.getSize()
         
         let originalSize = ProjectorConfiguration.originalSize
@@ -226,8 +206,6 @@ class Projector {
         
         var percentOfNew = CGFloat(0)
         var percentOfOld = CGFloat(0)
-        
-//        var originalToNewWidthRatio =
         
         var projectedDeviceIsSkinnier = false
         if originalAspectRatio < newAspectRatio {
@@ -316,17 +294,6 @@ class Projector {
             }
         }
         
-        
-        
-//        return dataRectString
-//        print("RECT: \(dataRectString)")
-//        if let data = dataRectString.data(using: .utf8) {
-//            if let aztec = CIFilter(name: "CIAztecCodeGenerator", parameters: ["inputMessage" : data])?.outputImage {
-//                let uiImageCode = aztec.convertToUIImage()
-//                return uiImageCode
-//            }
-//        }
-        //RECT: 83.3349753694581y20.0w330.6650246305419h716.0
     }
 }
 extension CIImage {

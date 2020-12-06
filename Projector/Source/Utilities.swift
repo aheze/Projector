@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import MediaPlayer
 
 class PassView: UIView {}
 class OverlayControlsWindow: UIWindow {
@@ -21,6 +21,18 @@ class OverlayControlsWindow: UIWindow {
         return nil
     }
 }
+
+//Update system volume
+extension MPVolumeView {
+    static func setVolume(_ volume: Float) {
+        let volumeView = MPVolumeView()
+        let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
+            slider?.value = volume
+        }
+    }
+}
+
 
 extension UIView {
     func setAnchorPoint(_ point: CGPoint) {

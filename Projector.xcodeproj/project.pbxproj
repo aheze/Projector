@@ -21,6 +21,7 @@
 		496A19BA245E80D800D758FB /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19B9245E80D800D758FB /* CollectionViewCell.swift */; };
 		496A19BC245E80F900D758FB /* Projector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19BB245E80F900D758FB /* Projector.swift */; };
 		496A19BE245E811B00D758FB /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496A19BD245E811B00D758FB /* Configuration.swift */; };
+		49B29E7E248B2CA100EA1647 /* ProjectorFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B29E7D248B2CA100EA1647 /* ProjectorFiles.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		496A19B9245E80D800D758FB /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		496A19BB245E80F900D758FB /* Projector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Projector.swift; sourceTree = "<group>"; };
 		496A19BD245E811B00D758FB /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		49B29E7D248B2CA100EA1647 /* ProjectorFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectorFiles.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 				496A19B7245E804F00D758FB /* Utilities.swift */,
 				496A19BB245E80F900D758FB /* Projector.swift */,
 				496A19BD245E811B00D758FB /* Configuration.swift */,
+				49B29E7D248B2CA100EA1647 /* ProjectorFiles.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -188,6 +191,7 @@
 				496A19B1245E7F9500D758FB /* ScreenBounds.swift in Sources */,
 				496A19B8245E804F00D758FB /* Utilities.swift in Sources */,
 				496A199B245E7ED300D758FB /* SceneDelegate.swift in Sources */,
+				49B29E7E248B2CA100EA1647 /* ProjectorFiles.swift in Sources */,
 				496A19BE245E811B00D758FB /* Configuration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

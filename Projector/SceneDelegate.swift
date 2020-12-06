@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MediaPlayer
 
 @available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -48,6 +49,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
+        print("RESIGN")
+        print("origi: \(ProjectorConfiguration.originalVolume)")
+        MPVolumeView.setVolume(ProjectorConfiguration.originalVolume)
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
     }

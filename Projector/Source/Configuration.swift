@@ -20,6 +20,7 @@ class ProjectorSettings: NSObject {
 
 class ProjectorConfiguration: NSObject {
     
+    static var originalVolume = Float(0.5)
     static var isLandscape = false
     
     static var rootWindow = UIWindow()
@@ -35,5 +36,7 @@ class ProjectorConfiguration: NSObject {
     static var originalSize = CGSize(width: 0, height: 0)
     static var statusBarHeight = CGFloat(0)
     static var devices: [DeviceType] = [.iPhoneSE1, .iPhoneSE2, .iPhone8Plus, .iPhoneX, .iPhone11, .iPhone11ProMax, .iPadMini, .iPad9_7, .iPad10_2, .iPad10_5, .iPadPro11, .iPadPro12]
+    
+    static var currentIndex = 0
     
 }
