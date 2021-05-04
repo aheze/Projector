@@ -1,10 +1,12 @@
 # Projector
 ### Forget the Simulator, swap your aspect ratio instead!
 
+Projector is an experimental project (don't use it in production!) that lets you simulate *any* iPhone or iPad on your device. Because the simulator is slow, doesn't have a camera, and is terrible with gestures, I had to find an alternative. Here it is!
+
+Projector works by directly modifying the root window.
+
 ![](https://raw.githubusercontent.com/aheze/DeveloperAssets/master/AdvancedProjector.png)
 
-
-Warning: This is an experimental project that shouldn’t be used in production.
 
 ## Article
 I wrote an article about this on [Medium](https://medium.com/macoclock/test-your-app-on-different-screen-sizes-without-the-simulator-ce1ebfdfac22?source=friends_link&sk=db88b92c6cbb4bc1675da8e7d3cb54f6)!
@@ -60,7 +62,7 @@ Projector is licensed under the MIT license.
 ```
 MIT License
 
-Copyright (c) 2020 A. Zheng
+Copyright (c) 2021 A. Zheng
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
