@@ -1,6 +1,10 @@
 # Projector
 ### Forget the Simulator, swap your aspect ratio instead!
 
+For a similar and newer SwiftUI project, check out https://github.com/YusukeHosonuma/SwiftUI-Simulator.
+
+---
+
 Projector is an experimental project (don't use it in production!) that lets you simulate *any* iPhone or iPad on your device. Because the simulator is slow, doesn't have a camera, and is terrible with gestures, I had to find an alternative. Here it is!
 
 Projector works by directly modifying the root window.
